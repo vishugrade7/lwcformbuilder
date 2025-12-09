@@ -16,7 +16,6 @@ export interface FormComponent {
   placeholder?: string;
   required?: boolean;
   options?: string[]; // For dropdown
-  validations?: string[];
 }
 
 export interface AvailableComponent {

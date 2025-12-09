@@ -1,13 +1,10 @@
 'use client';
-import { suggestFieldType } from '@/ai/flows/ai-suggest-field-type';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
 import type { FormComponent } from '@/lib/types';
-import { Loader, Plus, Sparkles, Trash2, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Plus, X } from 'lucide-react';
 
 interface ConfigurationPanelProps {
   selectedComponent: FormComponent | null;
@@ -18,36 +15,6 @@ export default function ConfigurationPanel({
   selectedComponent,
   onUpdateComponent,
 }: ConfigurationPanelProps) {
-  const [isAiLoading, setIsAiLoading] = useState(false);
-  const { toast } = useToast();
-
-  const handleAiSuggest = async () => {
-    if (!selectedComponent) return;
-    setIsAiLoading(true);
-    try {
-      const result = await suggestFieldType(selectedComponent.label);
-      if (result.fieldType) {
-        onUpdateComponent(selectedComponent.id, {
-          type: result.fieldType as FormComponent['type'],
-          validations: result.validationRules,
-        });
-        toast({
-          title: 'AI Suggestion Applied',
-          description: `Field type changed to "${result.fieldType}".`,
-        });
-      }
-    } catch (error) {
-      console.error('AI suggestion failed:', error);
-      toast({
-        variant: 'destructive',
-        title: 'AI Suggestion Error',
-        description: 'Could not get suggestions. Please try again.',
-      });
-    } finally {
-      setIsAiLoading(false);
-    }
-  };
-
   const handleOptionChange = (index: number, value: string) => {
     if (!selectedComponent || !selectedComponent.options) return;
     const newOptions = [...selectedComponent.options];
@@ -94,19 +61,6 @@ export default function ConfigurationPanel({
                 onUpdateComponent(selectedComponent.id, { label: e.target.value })
               }
             />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleAiSuggest}
-              disabled={isAiLoading}
-              title="AI Suggest Field Type"
-            >
-              {isAiLoading ? (
-                <Loader className="h-4 w-4 animate-spin" />
-              ) : (
-                <Sparkles className="h-4 w-4 text-primary" />
-              )}
-            </Button>
           </div>
         </div>
         {['text', 'email', 'password', 'number', 'textarea', 'dropdown'].includes(selectedComponent.type) && (
@@ -160,17 +114,6 @@ export default function ConfigurationPanel({
             <Button variant="outline" size="sm" onClick={addOption}>
               <Plus className="mr-2 h-4 w-4" /> Add Option
             </Button>
-          </div>
-        )}
-
-        {selectedComponent.validations && selectedComponent.validations.length > 0 && (
-          <div>
-            <Label>AI Suggested Validations</Label>
-            <ul className="mt-2 list-disc list-inside text-sm text-muted-foreground bg-accent p-3 rounded-md">
-              {selectedComponent.validations.map((val, i) => (
-                <li key={i}>{val}</li>
-              ))}
-            </ul>
           </div>
         )}
       </div>
