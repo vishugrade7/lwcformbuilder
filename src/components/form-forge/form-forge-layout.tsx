@@ -107,6 +107,11 @@ export default function FormForgeLayout() {
     }
   };
 
+  const handleGenerateCode = () => {
+    setIsPreviewOpen(false);
+    setIsCodeOpen(true);
+  };
+
   const selectedComponent =
     components.find((c) => c.id === selectedComponentId) || null;
 
@@ -135,6 +140,7 @@ export default function FormForgeLayout() {
         isOpen={isPreviewOpen}
         onOpenChange={setIsPreviewOpen}
         components={components}
+        onCodeClick={handleGenerateCode}
       />
       <CodeModal
         isOpen={isCodeOpen}

@@ -23,7 +23,7 @@ import type { FormComponent } from '@/lib/types';
 import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover';
 import { Calendar } from '../ui/calendar';
 import { cn } from '@/lib/utils';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, Code } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Switch } from '../ui/switch';
 import Image from 'next/image';
@@ -40,6 +40,7 @@ interface PreviewModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   components: FormComponent[];
+  onCodeClick: () => void;
 }
 
 const renderInput = (component: FormComponent) => {
@@ -247,6 +248,7 @@ export default function PreviewModal({
   isOpen,
   onOpenChange,
   components,
+  onCodeClick,
 }: PreviewModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -266,7 +268,13 @@ export default function PreviewModal({
               {components.map((component) => renderComponent(component))}
             </div>
             <div className="flex justify-end pt-4 col-span-12">
-              <Button type="submit">Submit</Button>
+              <Button
+                size="icon"
+                onClick={onCodeClick}
+                aria-label="Generate Code"
+              >
+                <Code className="h-5 w-5" />
+              </Button>
             </div>
           </form>
         </div>
