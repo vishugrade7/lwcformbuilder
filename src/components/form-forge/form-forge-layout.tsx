@@ -67,6 +67,10 @@ export default function FormForgeLayout() {
           { label: 'Column 2', fieldName: 'col2' },
         ];
       }
+      if (componentType === 'section-heading') {
+        newComponent.label = 'Section Heading';
+        newComponent.fieldName = '';
+      }
       setComponents((prev) => [...prev, newComponent]);
       setSelectedComponentId(newComponent.id);
     }

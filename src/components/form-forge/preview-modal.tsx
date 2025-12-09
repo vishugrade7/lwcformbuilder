@@ -182,6 +182,12 @@ const renderInput = (component: FormComponent) => {
           </TableBody>
         </Table>
       );
+    case 'section-heading':
+      return (
+        <h2 className="text-lg font-semibold text-foreground tracking-tight border-b pb-2">
+          {label}
+        </h2>
+      );
     default:
       return (
         <Input
@@ -205,7 +211,8 @@ const renderLabel = (component: FormComponent) => {
     variant === 'label-inline' ||
     type === 'image' ||
     type === 'richtext' ||
-    type === 'datatable'
+    type === 'datatable' ||
+    type === 'section-heading'
   )
     return null;
 

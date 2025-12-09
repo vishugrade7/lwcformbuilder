@@ -17,6 +17,7 @@ import {
   Image,
   Text,
   Table,
+  Heading1,
 } from 'lucide-react';
 
 export const AVAILABLE_COMPONENTS: AvailableComponent[] = [
@@ -37,4 +38,5 @@ export const AVAILABLE_COMPONENTS: AvailableComponent[] = [
   { name: 'Image', icon: Image, type: 'image' },
   { name: 'Rich Text', icon: Text, type: 'richtext' },
   { name: 'Data Table', icon: Table, type: 'datatable' },
+  { name: 'Section Heading', icon: Heading1, type: 'section-heading' },
 ];

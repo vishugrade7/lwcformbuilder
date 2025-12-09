@@ -123,6 +123,9 @@ export function generateLwcHtml(components: FormComponent[]): string {
             hide-checkbox-column
         ></lightning-datatable>`;
           break;
+        case 'section-heading':
+          componentHtml = `        <h2 class="slds-text-heading_medium slds-m-bottom_small">${label}</h2>`;
+          break;
         default:
           return '';
       }

@@ -94,9 +94,13 @@ export default function ConfigurationPanel({
     'search',
   ].includes(selectedComponent.type);
 
-  const showRequired = !['switch', 'image', 'richtext', 'datatable'].includes(
-    selectedComponent.type
-  );
+  const showRequired = ![
+    'switch',
+    'image',
+    'richtext',
+    'datatable',
+    'section-heading',
+  ].includes(selectedComponent.type);
 
   const showOptions = ['dropdown', 'radiogroup'].includes(
     selectedComponent.type
@@ -123,11 +127,15 @@ export default function ConfigurationPanel({
     'image',
     'richtext',
     'datatable',
+    'section-heading',
   ].includes(selectedComponent.type);
 
-  const showFieldName = !['image', 'richtext', 'datatable'].includes(
-    selectedComponent.type
-  );
+  const showFieldName = ![
+    'image',
+    'richtext',
+    'datatable',
+    'section-heading',
+  ].includes(selectedComponent.type);
   const showLabel = !['image', 'richtext'].includes(selectedComponent.type);
 
   return (
