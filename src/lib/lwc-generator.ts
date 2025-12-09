@@ -1,7 +1,11 @@
 import type { FormComponent } from './types';
 
 function toCamelCase(str: string): string {
-  return str.replace(/[^a-zA-Z0-9]+(.)?/g, (m, chr) => chr.toUpperCase());
+  // Replace spaces and special characters, and capitalize the next letter
+  let camel = str
+    .replace(/[^a-zA-Z0-9]+(.)?/g, (m, chr) => (chr ? chr.toUpperCase() : ''))
+    .replace(/^./, (str) => str.toLowerCase());
+  return camel;
 }
 
 export function generateLwcHtml(components: FormComponent[]): string {
@@ -49,6 +53,30 @@ export function generateLwcHtml(components: FormComponent[]): string {
             ${required ? 'required' : ''}
             class="slds-m-bottom_small"
         ></lightning-combobox>`;
+        case 'date':
+          return `        <lightning-input
+            type="date"
+            label="${label}"
+            name="${fieldName}"
+            ${required ? 'required' : ''}
+            class="slds-m-bottom_small"
+        ></lightning-input>`;
+        case 'radiogroup':
+          return `        <lightning-radio-group
+            name="${fieldName}"
+            label="${label}"
+            options={${fieldName}Options}
+            value={value}
+            ${required ? 'required' : ''}
+            class="slds-m-bottom_small"
+        ></lightning-radio-group>`;
+        case 'switch':
+          return `        <lightning-input
+            type="toggle"
+            label="${label}"
+            name="${fieldName}"
+            class="slds-m-bottom_small"
+        ></lightning-input>`;
         default:
           return '';
       }
@@ -59,6 +87,13 @@ export function generateLwcHtml(components: FormComponent[]): string {
     <lightning-card title="Generated Form" icon-name="standard:account">
         <div class="slds-p-around_medium">
 ${inputs}
+            <div class="slds-m-top_medium">
+                <lightning-button
+                    variant="brand"
+                    label="Submit"
+                    onclick={handleSubmit}
+                ></lightning-button>
+            </div>
         </div>
     </lightning-card>
 </template>`;
@@ -67,7 +102,7 @@ ${inputs}
 export function generateLwcJs(components: FormComponent[]): string {
   const properties = components
     .map((component) => {
-      if (component.type === 'dropdown') {
+      if (component.type === 'dropdown' || component.type === 'radiogroup') {
         const fieldName = toCamelCase(component.label);
         const options =
           component.options?.map((opt) => ({ label: opt, value: opt })) || [];
@@ -86,6 +121,10 @@ ${properties ? properties + '\n' : ''}
 
     // Add your form handling logic here
     // e.g., handleChange(event) { ... }
+    handleSubmit(event) {
+        // Implement your submit logic
+        console.log('Form submitted');
+    }
 }
 `;
 }

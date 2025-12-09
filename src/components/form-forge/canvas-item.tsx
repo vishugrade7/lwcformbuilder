@@ -2,7 +2,7 @@
 import { cn } from '@/lib/utils';
 import type { FormComponent } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { Trash2 } from 'lucide-react';
+import { CalendarIcon, Trash2 } from 'lucide-react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
@@ -14,6 +14,10 @@ import {
   SelectValue,
 } from '../ui/select';
 import { Checkbox } from '../ui/checkbox';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Calendar } from '../ui/calendar';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { Switch } from '../ui/switch';
 
 interface CanvasItemProps {
   component: FormComponent;
@@ -65,6 +69,56 @@ const ComponentPreview = ({ component }: { component: FormComponent }) => {
             {label}
             {required && <span className="text-destructive"> *</span>}
           </Label>
+        </div>
+      );
+    case 'date':
+      return (
+        <div>
+          <Label htmlFor={id}>
+            {label}
+            {required && <span className="text-destructive"> *</span>}
+          </Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={'outline'}
+                className={cn(
+                  'w-full justify-start text-left font-normal mt-1',
+                  !label && 'text-muted-foreground'
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                <span>Pick a date</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar mode="single" initialFocus />
+            </PopoverContent>
+          </Popover>
+        </div>
+      );
+    case 'radiogroup':
+      return (
+        <div>
+          <Label htmlFor={id}>
+            {label}
+            {required && <span className="text-destructive"> *</span>}
+          </Label>
+          <RadioGroup id={id} className="mt-2 space-y-2">
+            {options?.map((option, i) => (
+              <div key={i} className="flex items-center space-x-2">
+                <RadioGroupItem value={option} id={`${id}-${i}`} />
+                <Label htmlFor={`${id}-${i}`}>{option}</Label>
+              </div>
+            ))}
+          </RadioGroup>
+        </div>
+      );
+    case 'switch':
+      return (
+        <div className="flex items-center space-x-2">
+          <Switch id={id} />
+          <Label htmlFor={id}>{label}</Label>
         </div>
       );
     default:

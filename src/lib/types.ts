@@ -7,7 +7,10 @@ export type ComponentType =
   | 'number'
   | 'checkbox'
   | 'dropdown'
-  | 'textarea';
+  | 'textarea'
+  | 'date'
+  | 'radiogroup'
+  | 'switch';
 
 export interface FormComponent {
   id: string;
@@ -15,7 +18,7 @@ export interface FormComponent {
   label: string;
   placeholder?: string;
   required?: boolean;
-  options?: string[]; // For dropdown
+  options?: string[]; // For dropdown, radiogroup
 }
 
 export interface AvailableComponent {

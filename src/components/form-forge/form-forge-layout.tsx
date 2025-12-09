@@ -31,8 +31,11 @@ export default function FormForgeLayout() {
         label: `New ${componentType}`,
         required: false,
       };
-      if (componentType === 'dropdown') {
+      if (componentType === 'dropdown' || componentType === 'radiogroup') {
         newComponent.options = ['Option 1', 'Option 2'];
+      }
+      if (componentType === 'switch') {
+        newComponent.label = 'Enable Feature';
       }
       setComponents((prev) => [...prev, newComponent]);
       setSelectedComponentId(newComponent.id);

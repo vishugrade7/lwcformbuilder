@@ -20,6 +20,12 @@ import {
 import { Checkbox } from '../ui/checkbox';
 import { Button } from '../ui/button';
 import type { FormComponent } from '@/lib/types';
+import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover';
+import { Calendar } from '../ui/calendar';
+import { cn } from '@/lib/utils';
+import { CalendarIcon } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { Switch } from '../ui/switch';
 
 interface PreviewModalProps {
   isOpen: boolean;
@@ -92,6 +98,70 @@ export default function PreviewModal({
                       <Label htmlFor={inputId} className="font-normal">
                         {label}
                         {required && <span className="text-destructive"> *</span>}
+                      </Label>
+                    </div>
+                  );
+                case 'date':
+                  return (
+                    <div key={id}>
+                      <Label>
+                        {label}
+                        {required && <span className="text-destructive"> *</span>}
+                      </Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={'outline'}
+                            className={cn(
+                              'w-full justify-start text-left font-normal mt-1',
+                              !label && 'text-muted-foreground'
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            <span>Pick a date</span>
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            initialFocus
+                            required={required}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  );
+                case 'radiogroup':
+                  return (
+                    <div key={id}>
+                      <Label>
+                        {label}
+                        {required && <span className="text-destructive"> *</span>}
+                      </Label>
+                      <RadioGroup required={required} className="mt-2 space-y-2">
+                        {options?.map((option, i) => (
+                          <div key={i} className="flex items-center space-x-2">
+                            <RadioGroupItem
+                              value={option}
+                              id={`${inputId}-${i}`}
+                            />
+                            <Label
+                              htmlFor={`${inputId}-${i}`}
+                              className="font-normal"
+                            >
+                              {option}
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                  );
+                case 'switch':
+                  return (
+                    <div key={id} className="flex items-center space-x-2">
+                      <Switch id={inputId} />
+                      <Label htmlFor={inputId} className="font-normal">
+                        {label}
                       </Label>
                     </div>
                   );

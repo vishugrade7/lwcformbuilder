@@ -47,6 +47,21 @@ export default function ConfigurationPanel({
     );
   }
 
+  const showPlaceholder = [
+    'text',
+    'email',
+    'password',
+    'number',
+    'textarea',
+    'dropdown',
+  ].includes(selectedComponent.type);
+
+  const showRequired = !['switch'].includes(selectedComponent.type);
+
+  const showOptions = ['dropdown', 'radiogroup'].includes(
+    selectedComponent.type
+  );
+
   return (
     <aside className="w-80 p-4 border-l bg-card overflow-y-auto hidden lg:block">
       <h2 className="text-xl font-semibold mb-6">Configuration</h2>
@@ -63,7 +78,7 @@ export default function ConfigurationPanel({
             />
           </div>
         </div>
-        {['text', 'email', 'password', 'number', 'textarea', 'dropdown'].includes(selectedComponent.type) && (
+        {showPlaceholder && (
           <div>
             <Label htmlFor="placeholder">Placeholder</Label>
             <Input
@@ -78,20 +93,22 @@ export default function ConfigurationPanel({
             />
           </div>
         )}
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="required"
-            checked={selectedComponent.required}
-            onCheckedChange={(checked) =>
-              onUpdateComponent(selectedComponent.id, {
-                required: !!checked,
-              })
-            }
-          />
-          <Label htmlFor="required">Required</Label>
-        </div>
+        {showRequired && (
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="required"
+              checked={selectedComponent.required}
+              onCheckedChange={(checked) =>
+                onUpdateComponent(selectedComponent.id, {
+                  required: !!checked,
+                })
+              }
+            />
+            <Label htmlFor="required">Required</Label>
+          </div>
+        )}
 
-        {selectedComponent.type === 'dropdown' && (
+        {showOptions && (
           <div className="space-y-2">
             <Label>Options</Label>
             <div className="space-y-2">
