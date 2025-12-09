@@ -50,18 +50,50 @@ export default function PreviewModal({
         <div className="mt-4 p-6 border rounded-lg max-h-[60vh] overflow-y-auto">
           <form className="space-y-6">
             {components.map((component) => {
-              const { id, type, label, placeholder, required, options } =
-                component;
+              const {
+                id,
+                type,
+                label,
+                placeholder,
+                required,
+                options,
+                variant,
+              } = component;
               const inputId = `preview-input-${id}`;
+
+              const hideLabel = variant === 'label-hidden';
+
+              if (variant === 'label-inline') {
+                return (
+                  <div key={id} className="grid grid-cols-3 items-center gap-4">
+                    <Label htmlFor={inputId} className="text-right">
+                      {label}
+                      {required && <span className="text-destructive"> *</span>}
+                    </Label>
+                    <div className="col-span-2">
+                      <Input
+                        id={inputId}
+                        type={type}
+                        placeholder={placeholder}
+                        required={required}
+                      />
+                    </div>
+                  </div>
+                );
+              }
 
               switch (type) {
                 case 'textarea':
                   return (
                     <div key={id}>
-                      <Label htmlFor={inputId}>
-                        {label}
-                        {required && <span className="text-destructive"> *</span>}
-                      </Label>
+                      {!hideLabel && (
+                        <Label htmlFor={inputId}>
+                          {label}
+                          {required && (
+                            <span className="text-destructive"> *</span>
+                          )}
+                        </Label>
+                      )}
                       <Textarea
                         id={inputId}
                         placeholder={placeholder}
@@ -73,10 +105,14 @@ export default function PreviewModal({
                 case 'dropdown':
                   return (
                     <div key={id}>
-                      <Label htmlFor={inputId}>
-                        {label}
-                        {required && <span className="text-destructive"> *</span>}
-                      </Label>
+                      {!hideLabel && (
+                        <Label htmlFor={inputId}>
+                          {label}
+                          {required && (
+                            <span className="text-destructive"> *</span>
+                          )}
+                        </Label>
+                      )}
                       <Select required={required}>
                         <SelectTrigger id={inputId} className="mt-1">
                           <SelectValue placeholder={placeholder} />
@@ -97,17 +133,23 @@ export default function PreviewModal({
                       <Checkbox id={inputId} required={required} />
                       <Label htmlFor={inputId} className="font-normal">
                         {label}
-                        {required && <span className="text-destructive"> *</span>}
+                        {required && (
+                          <span className="text-destructive"> *</span>
+                        )}
                       </Label>
                     </div>
                   );
                 case 'date':
                   return (
                     <div key={id}>
-                      <Label>
-                        {label}
-                        {required && <span className="text-destructive"> *</span>}
-                      </Label>
+                      {!hideLabel && (
+                        <Label>
+                          {label}
+                          {required && (
+                            <span className="text-destructive"> *</span>
+                          )}
+                        </Label>
+                      )}
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
@@ -134,11 +176,18 @@ export default function PreviewModal({
                 case 'radiogroup':
                   return (
                     <div key={id}>
-                      <Label>
-                        {label}
-                        {required && <span className="text-destructive"> *</span>}
-                      </Label>
-                      <RadioGroup required={required} className="mt-2 space-y-2">
+                      {!hideLabel && (
+                        <Label>
+                          {label}
+                          {required && (
+                            <span className="text-destructive"> *</span>
+                          )}
+                        </Label>
+                      )}
+                      <RadioGroup
+                        required={required}
+                        className="mt-2 space-y-2"
+                      >
                         {options?.map((option, i) => (
                           <div key={i} className="flex items-center space-x-2">
                             <RadioGroupItem
@@ -168,10 +217,14 @@ export default function PreviewModal({
                 default:
                   return (
                     <div key={id}>
-                      <Label htmlFor={inputId}>
-                        {label}
-                        {required && <span className="text-destructive"> *</span>}
-                      </Label>
+                      {!hideLabel && (
+                        <Label htmlFor={inputId}>
+                          {label}
+                          {required && (
+                            <span className="text-destructive"> *</span>
+                          )}
+                        </Label>
+                      )}
                       <Input
                         id={inputId}
                         type={type}

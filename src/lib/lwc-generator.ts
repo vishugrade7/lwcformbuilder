@@ -16,6 +16,8 @@ export function generateLwcHtml(components: FormComponent[]): string {
         pattern,
         disabled,
         readOnly,
+        variant,
+        width,
       } = component;
 
       const commonProps = `label="${label}"
@@ -23,76 +25,86 @@ export function generateLwcHtml(components: FormComponent[]): string {
             ${required ? 'required' : ''}
             ${disabled ? 'disabled' : ''}
             ${readOnly ? 'readonly' : ''}
-            ${helpText ? `help-text="${helpText}"` : ''}`;
+            ${variant ? `variant="${variant}"` : ''}
+            ${helpText ? `field-level-help="${helpText}"` : ''}`;
+
+      let componentHtml = '';
 
       switch (type) {
         case 'text':
         case 'email':
         case 'password':
         case 'number':
-          return `        <lightning-input
+          componentHtml = `        <lightning-input
             type="${type}"
             ${commonProps}
             ${placeholder ? `placeholder="${placeholder}"` : ''}
             ${minLength !== undefined ? `min-length="${minLength}"` : ''}
             ${maxLength !== undefined ? `max-length="${maxLength}"` : ''}
             ${pattern ? `pattern="${pattern}"` : ''}
-            class="slds-m-bottom_small"
         ></lightning-input>`;
+          break;
         case 'textarea':
-          return `        <lightning-textarea
+          componentHtml = `        <lightning-textarea
             ${commonProps}
             ${placeholder ? `placeholder="${placeholder}"` : ''}
             ${minLength !== undefined ? `min-length="${minLength}"` : ''}
             ${maxLength !== undefined ? `max-length="${maxLength}"` : ''}
-            class="slds-m-bottom_small"
         ></lightning-textarea>`;
+          break;
         case 'checkbox':
-          return `        <lightning-input
+          componentHtml = `        <lightning-input
             type="checkbox"
             ${commonProps}
-            class="slds-m-bottom_small"
         ></lightning-input>`;
+          break;
         case 'dropdown':
-          return `        <lightning-combobox
+          componentHtml = `        <lightning-combobox
             ${commonProps}
             value={value}
             placeholder="${placeholder || 'Select an Option'}"
             options={${fieldName}Options}
-            class="slds-m-bottom_small"
         ></lightning-combobox>`;
+          break;
         case 'date':
-          return `        <lightning-input
+          componentHtml = `        <lightning-input
             type="date"
             ${commonProps}
-            class="slds-m-bottom_small"
         ></lightning-input>`;
+          break;
         case 'radiogroup':
-          return `        <lightning-radio-group
+          componentHtml = `        <lightning-radio-group
             ${commonProps}
             options={${fieldName}Options}
             value={value}
-            class="slds-m-bottom_small"
         ></lightning-radio-group>`;
+          break;
         case 'switch':
-          return `        <lightning-input
+          componentHtml = `        <lightning-input
             type="toggle"
             label="${label}"
             name="${fieldName}"
             ${disabled ? 'disabled' : ''}
-            ${helpText ? `help-text="${helpText}"` : ''}
-            class="slds-m-bottom_small"
+            ${helpText ? `message-toggle-active="" message-toggle-inactive=""` : ''}
         ></lightning-input>`;
+          break;
         default:
           return '';
       }
+      return `<lightning-layout-item size="${
+        width || '12'
+      }" padding="horizontal-small" class="slds-m-bottom_small">
+${componentHtml}
+        </lightning-layout-item>`;
     })
     .join('\n\n');
 
   return `<template>
     <lightning-card title="Generated Form" icon-name="standard:account">
         <div class="slds-p-around_medium">
+            <lightning-layout multiple-rows="true">
 ${inputs}
+            </lightning-layout>
             <div class="slds-m-top_medium">
                 <lightning-button
                     variant="brand"

@@ -38,6 +38,8 @@ export default function FormForgeLayout() {
         label: baseLabel,
         fieldName: toCamelCase(baseLabel),
         required: false,
+        variant: 'standard',
+        width: '12',
       };
       if (componentType === 'dropdown' || componentType === 'radiogroup') {
         newComponent.options = ['Option 1', 'Option 2'];

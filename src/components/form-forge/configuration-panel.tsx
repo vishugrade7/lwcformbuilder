@@ -6,6 +6,13 @@ import { Label } from '@/components/ui/label';
 import type { FormComponent } from '@/lib/types';
 import { Plus, X } from 'lucide-react';
 import { Switch } from '../ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
 
 interface ConfigurationPanelProps {
   selectedComponent: FormComponent | null;
@@ -70,6 +77,13 @@ export default function ConfigurationPanel({
     selectedComponent.type
   );
 
+  const showVariant = ![
+    'checkbox',
+    'switch',
+    'radiogroup',
+    'date',
+  ].includes(selectedComponent.type);
+
   return (
     <aside className="w-80 p-4 border-l bg-card overflow-y-auto hidden lg:block">
       <h2 className="text-xl font-semibold mb-6">Configuration</h2>
@@ -125,6 +139,52 @@ export default function ConfigurationPanel({
               })
             }
           />
+        </div>
+
+        {showVariant && (
+          <div>
+            <Label htmlFor="variant">Variant</Label>
+            <Select
+              value={selectedComponent.variant || 'standard'}
+              onValueChange={(value) =>
+                onUpdateComponent(selectedComponent.id, {
+                  variant: value as FormComponent['variant'],
+                })
+              }
+            >
+              <SelectTrigger id="variant" className="mt-1">
+                <SelectValue placeholder="Select variant" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="standard">Standard</SelectItem>
+                <SelectItem value="label-hidden">Label Hidden</SelectItem>
+                <SelectItem value="label-inline">Label Inline</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        <div>
+          <Label htmlFor="width">Width</Label>
+          <Select
+            value={selectedComponent.width || '12'}
+            onValueChange={(value) =>
+              onUpdateComponent(selectedComponent.id, {
+                width: value as FormComponent['width'],
+              })
+            }
+          >
+            <SelectTrigger id="width" className="mt-1">
+              <SelectValue placeholder="Select width" />
+            </SelectTrigger>
+            <SelectContent>
+              {Array.from({ length: 12 }, (_, i) => (
+                <SelectItem key={i + 1} value={String(i + 1)}>
+                  {i + 1}/12
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="space-y-2">

@@ -12,6 +12,9 @@ export type ComponentType =
   | 'radiogroup'
   | 'switch';
 
+export type ComponentVariant = 'standard' | 'label-hidden' | 'label-inline';
+export type ComponentWidth = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';
+
 export interface FormComponent {
   id: string;
   type: ComponentType;
@@ -26,6 +29,8 @@ export interface FormComponent {
   pattern?: string;
   disabled?: boolean;
   readOnly?: boolean;
+  variant?: ComponentVariant;
+  width?: ComponentWidth;
 }
 
 export interface AvailableComponent {
