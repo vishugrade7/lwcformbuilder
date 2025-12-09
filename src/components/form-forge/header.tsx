@@ -8,6 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { ThemeToggleButton } from './theme-toggle-button';
 
 interface HeaderProps {
   onPreviewClick: () => void;
@@ -24,6 +25,7 @@ export default function Header({ onPreviewClick, onCodeClick }: HeaderProps) {
         </h1>
       </div>
       <div className="flex items-center gap-2">
+        <ThemeToggleButton />
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
