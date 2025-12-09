@@ -16,6 +16,7 @@ import {
   File,
   Image,
   Text,
+  Table,
 } from 'lucide-react';
 
 export const AVAILABLE_COMPONENTS: AvailableComponent[] = [
@@ -35,4 +36,5 @@ export const AVAILABLE_COMPONENTS: AvailableComponent[] = [
   { name: 'File', icon: File, type: 'file' },
   { name: 'Image', icon: Image, type: 'image' },
   { name: 'Rich Text', icon: Text, type: 'richtext' },
+  { name: 'Data Table', icon: Table, type: 'datatable' },
 ];

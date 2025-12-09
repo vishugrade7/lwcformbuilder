@@ -19,6 +19,14 @@ import { Calendar } from '../ui/calendar';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Switch } from '../ui/switch';
 import Image from 'next/image';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../ui/table';
 
 interface CanvasItemProps {
   component: FormComponent;
@@ -32,8 +40,18 @@ interface CanvasItemProps {
 }
 
 const ComponentPreview = ({ component }: { component: FormComponent }) => {
-  const { type, label, placeholder, required, options, variant, src, alt, value } =
-    component;
+  const {
+    type,
+    label,
+    placeholder,
+    required,
+    options,
+    variant,
+    src,
+    alt,
+    value,
+    columns,
+  } = component;
   const id = `preview-${component.id}`;
   const hideLabel = variant === 'label-hidden';
 
@@ -129,6 +147,30 @@ const ComponentPreview = ({ component }: { component: FormComponent }) => {
             }}
           />
         );
+      case 'datatable':
+        return (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {columns?.map((col, i) => (
+                  <TableHead key={i}>{col.label}</TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                {columns?.map((col, i) => (
+                  <TableCell key={i}>Sample Data</TableCell>
+                ))}
+              </TableRow>
+              <TableRow>
+                {columns?.map((col, i) => (
+                  <TableCell key={i}>Sample Data</TableCell>
+                ))}
+              </TableRow>
+            </TableBody>
+          </Table>
+        );
       default:
         return (
           <Input
@@ -149,7 +191,8 @@ const ComponentPreview = ({ component }: { component: FormComponent }) => {
       type === 'switch' ||
       variant === 'label-inline' ||
       type === 'image' ||
-      type === 'richtext'
+      type === 'richtext' ||
+      type === 'datatable'
     )
       return null;
     return (
@@ -209,7 +252,7 @@ export default function CanvasItem({
         isSelected
           ? 'bg-primary/5 border-2 border-primary'
           : 'bg-transparent border-2 border-transparent hover:bg-accent',
-        isDragging && 'opacity-50',
+        isDragging && 'opacity-50'
       )}
       aria-selected={isSelected}
     >

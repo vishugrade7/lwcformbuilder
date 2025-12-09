@@ -27,6 +27,14 @@ import { CalendarIcon } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Switch } from '../ui/switch';
 import Image from 'next/image';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../ui/table';
 
 interface PreviewModalProps {
   isOpen: boolean;
@@ -35,8 +43,18 @@ interface PreviewModalProps {
 }
 
 const renderInput = (component: FormComponent) => {
-  const { id, type, placeholder, options, required, label, src, alt, value } =
-    component;
+  const {
+    id,
+    type,
+    placeholder,
+    options,
+    required,
+    label,
+    src,
+    alt,
+    value,
+    columns,
+  } = component;
   const inputId = `preview-input-${id}`;
 
   switch (type) {
@@ -133,6 +151,36 @@ const renderInput = (component: FormComponent) => {
           dangerouslySetInnerHTML={{ __html: value || '' }}
         />
       );
+    case 'datatable':
+      const sampleData = Array(3)
+        .fill(0)
+        .map((_, i) =>
+          columns?.reduce(
+            (acc, col) => ({ ...acc, [col.fieldName]: `Row ${i + 1} Data` }),
+            { id: i }
+          )
+        );
+
+      return (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {columns?.map((col, i) => (
+                <TableHead key={i}>{col.label}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {sampleData.map((row) => (
+              <TableRow key={row.id}>
+                {columns?.map((col, i) => (
+                  <TableCell key={i}>{row[col.fieldName]}</TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      );
     default:
       return (
         <Input
@@ -155,7 +203,8 @@ const renderLabel = (component: FormComponent) => {
     type === 'switch' ||
     variant === 'label-inline' ||
     type === 'image' ||
-    type === 'richtext'
+    type === 'richtext' ||
+    type === 'datatable'
   )
     return null;
 

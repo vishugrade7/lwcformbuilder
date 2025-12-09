@@ -59,6 +59,14 @@ export default function FormForgeLayout() {
         newComponent.label = 'Rich Text';
         newComponent.value = '<h2>Rich Text</h2><p>This is some rich text content.</p>';
       }
+      if (componentType === 'datatable') {
+        newComponent.label = 'Data Table';
+        newComponent.fieldName = 'dataTable';
+        newComponent.columns = [
+          { label: 'Column 1', fieldName: 'col1' },
+          { label: 'Column 2', fieldName: 'col2' },
+        ];
+      }
       setComponents((prev) => [...prev, newComponent]);
       setSelectedComponentId(newComponent.id);
     }

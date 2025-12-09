@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { FormComponent } from '@/lib/types';
+import type { FormComponent, DataTableColumn } from '@/lib/types';
 import { Plus, X } from 'lucide-react';
 import { Switch } from '../ui/switch';
 import {
@@ -43,6 +43,32 @@ export default function ConfigurationPanel({
     onUpdateComponent(selectedComponent.id, { options: newOptions });
   };
 
+  const handleColumnChange = (
+    index: number,
+    field: keyof DataTableColumn,
+    value: string
+  ) => {
+    if (!selectedComponent || !selectedComponent.columns) return;
+    const newColumns = [...selectedComponent.columns];
+    newColumns[index] = { ...newColumns[index], [field]: value };
+    onUpdateComponent(selectedComponent.id, { columns: newColumns });
+  };
+
+  const addColumn = () => {
+    if (!selectedComponent) return;
+    const newColumns = [
+      ...(selectedComponent.columns || []),
+      { label: 'New Column', fieldName: 'newColumn' },
+    ];
+    onUpdateComponent(selectedComponent.id, { columns: newColumns });
+  };
+
+  const removeColumn = (index: number) => {
+    if (!selectedComponent || !selectedComponent.columns) return;
+    const newColumns = selectedComponent.columns.filter((_, i) => i !== index);
+    onUpdateComponent(selectedComponent.id, { columns: newColumns });
+  };
+
   if (!selectedComponent) {
     return (
       <aside className="w-80 p-4 border-l bg-card hidden lg:flex flex-col items-center justify-center text-center">
@@ -68,7 +94,7 @@ export default function ConfigurationPanel({
     'search',
   ].includes(selectedComponent.type);
 
-  const showRequired = !['switch', 'image', 'richtext'].includes(
+  const showRequired = !['switch', 'image', 'richtext', 'datatable'].includes(
     selectedComponent.type
   );
 
@@ -96,9 +122,12 @@ export default function ConfigurationPanel({
     'file',
     'image',
     'richtext',
+    'datatable',
   ].includes(selectedComponent.type);
 
-  const showFieldName = !['image', 'richtext'].includes(selectedComponent.type);
+  const showFieldName = !['image', 'richtext', 'datatable'].includes(
+    selectedComponent.type
+  );
   const showLabel = !['image', 'richtext'].includes(selectedComponent.type);
 
   return (
@@ -180,6 +209,47 @@ export default function ConfigurationPanel({
               }
               className="mt-1 h-32"
             />
+          </div>
+        )}
+
+        {selectedComponent.type === 'datatable' && (
+          <div className="space-y-2">
+            <Label>Columns</Label>
+            <div className="space-y-4">
+              {selectedComponent.columns?.map((col, index) => (
+                <div key={index} className="space-y-2 border p-2 rounded-md">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs" htmlFor={`col-label-${index}`}>Column {index + 1}</Label>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeColumn(index)}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    id={`col-label-${index}`}
+                    placeholder="Label"
+                    value={col.label}
+                    onChange={(e) =>
+                      handleColumnChange(index, 'label', e.target.value)
+                    }
+                  />
+                  <Input
+                    placeholder="Field Name"
+                    value={col.fieldName}
+                    onChange={(e) =>
+                      handleColumnChange(index, 'fieldName', e.target.value)
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+            <Button variant="outline" size="sm" onClick={addColumn}>
+              <Plus className="mr-2 h-4 w-4" /> Add Column
+            </Button>
           </div>
         )}
 

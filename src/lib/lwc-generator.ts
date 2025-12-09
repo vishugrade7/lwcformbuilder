@@ -21,6 +21,7 @@ export function generateLwcHtml(components: FormComponent[]): string {
         src,
         alt,
         value,
+        columns,
       } = component;
 
       const commonProps = `label="${label}"
@@ -114,6 +115,14 @@ export function generateLwcHtml(components: FormComponent[]): string {
             value={${fieldName}Value}
         ></lightning-formatted-rich-text>`;
           break;
+        case 'datatable':
+          componentHtml = `        <lightning-datatable
+            key-field="id"
+            data={${fieldName}Data}
+            columns={${fieldName}Columns}
+            hide-checkbox-column
+        ></lightning-datatable>`;
+          break;
         default:
           return '';
       }
@@ -146,7 +155,7 @@ ${inputs}
 export function generateLwcJs(components: FormComponent[]): string {
   const properties = components
     .map((component) => {
-      const { type, fieldName, value, options } = component;
+      const { type, fieldName, value, options, columns } = component;
       if (type === 'dropdown' || type === 'radiogroup') {
         const opts =
           options?.map((opt) => ({ label: opt, value: opt })) || [];
@@ -155,10 +164,18 @@ export function generateLwcJs(components: FormComponent[]): string {
       if (type === 'richtext') {
         return `    ${fieldName}Value = \`${value || ''}\`;`;
       }
+      if (type === 'datatable') {
+        const colDefs = columns?.map(col => ({ label: col.label, fieldName: col.fieldName })) || [];
+        const data = Array(3).fill(0).map((_, i) => 
+          columns?.reduce((acc, col) => ({...acc, [col.fieldName]: `Sample Data ${i+1}`}), {id: i}) || {}
+        );
+        return `    ${fieldName}Columns = ${JSON.stringify(colDefs, null, 4)};
+    ${fieldName}Data = ${JSON.stringify(data, null, 4)};`;
+      }
       return null;
     })
     .filter(Boolean)
-    .join('\n');
+    .join('\n\n');
 
   return `import { LightningElement, track } from 'lwc';
 

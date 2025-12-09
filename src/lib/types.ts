@@ -16,11 +16,16 @@ export type ComponentType =
   | 'search'
   | 'file'
   | 'image'
-  | 'richtext';
+  | 'richtext'
+  | 'datatable';
 
 export type ComponentVariant = 'standard' | 'label-hidden' | 'label-inline';
 export type ComponentWidth = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';
 
+export interface DataTableColumn {
+  label: string;
+  fieldName: string;
+}
 export interface FormComponent {
   id: string;
   type: ComponentType;
@@ -42,6 +47,8 @@ export interface FormComponent {
   alt?: string;
   // Rich text prop
   value?: string;
+  // Datatable props
+  columns?: DataTableColumn[];
 }
 
 export interface AvailableComponent {
