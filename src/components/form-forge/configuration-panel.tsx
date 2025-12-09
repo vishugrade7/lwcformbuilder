@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import { Textarea } from '../ui/textarea';
 
 interface ConfigurationPanelProps {
   selectedComponent: FormComponent | null;
@@ -67,7 +68,9 @@ export default function ConfigurationPanel({
     'search',
   ].includes(selectedComponent.type);
 
-  const showRequired = !['switch'].includes(selectedComponent.type);
+  const showRequired = !['switch', 'image', 'richtext'].includes(
+    selectedComponent.type
+  );
 
   const showOptions = ['dropdown', 'radiogroup'].includes(
     selectedComponent.type
@@ -91,36 +94,95 @@ export default function ConfigurationPanel({
     'radiogroup',
     'date',
     'file',
+    'image',
+    'richtext',
   ].includes(selectedComponent.type);
+
+  const showFieldName = !['image', 'richtext'].includes(selectedComponent.type);
+  const showLabel = !['image', 'richtext'].includes(selectedComponent.type);
 
   return (
     <aside className="w-80 p-4 border-l bg-card overflow-y-auto hidden lg:block">
       <h2 className="text-xl font-semibold mb-6">Configuration</h2>
       <div className="space-y-6">
-        <div>
-          <Label htmlFor="fieldName">Field Name</Label>
-          <Input
-            id="fieldName"
-            value={selectedComponent.fieldName}
-            onChange={(e) =>
-              onUpdateComponent(selectedComponent.id, {
-                fieldName: e.target.value,
-              })
-            }
-            className="mt-1"
-          />
-        </div>
-        <div>
-          <Label htmlFor="label">Label</Label>
-          <Input
-            id="label"
-            value={selectedComponent.label}
-            onChange={(e) =>
-              onUpdateComponent(selectedComponent.id, { label: e.target.value })
-            }
-            className="mt-1"
-          />
-        </div>
+        {showFieldName && (
+          <div>
+            <Label htmlFor="fieldName">Field Name</Label>
+            <Input
+              id="fieldName"
+              value={selectedComponent.fieldName}
+              onChange={(e) =>
+                onUpdateComponent(selectedComponent.id, {
+                  fieldName: e.target.value,
+                })
+              }
+              className="mt-1"
+            />
+          </div>
+        )}
+        {showLabel && (
+          <div>
+            <Label htmlFor="label">Label</Label>
+            <Input
+              id="label"
+              value={selectedComponent.label}
+              onChange={(e) =>
+                onUpdateComponent(selectedComponent.id, {
+                  label: e.target.value,
+                })
+              }
+              className="mt-1"
+            />
+          </div>
+        )}
+
+        {selectedComponent.type === 'image' && (
+          <>
+            <div>
+              <Label htmlFor="src">Image URL</Label>
+              <Input
+                id="src"
+                value={selectedComponent.src || ''}
+                onChange={(e) =>
+                  onUpdateComponent(selectedComponent.id, {
+                    src: e.target.value,
+                  })
+                }
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="alt">Alt Text</Label>
+              <Input
+                id="alt"
+                value={selectedComponent.alt || ''}
+                onChange={(e) =>
+                  onUpdateComponent(selectedComponent.id, {
+                    alt: e.target.value,
+                  })
+                }
+                className="mt-1"
+              />
+            </div>
+          </>
+        )}
+
+        {selectedComponent.type === 'richtext' && (
+          <div>
+            <Label htmlFor="value">HTML Content</Label>
+            <Textarea
+              id="value"
+              value={selectedComponent.value || ''}
+              onChange={(e) =>
+                onUpdateComponent(selectedComponent.id, {
+                  value: e.target.value,
+                })
+              }
+              className="mt-1 h-32"
+            />
+          </div>
+        )}
+
         {showPlaceholder && (
           <div>
             <Label htmlFor="placeholder">Placeholder</Label>
@@ -136,19 +198,21 @@ export default function ConfigurationPanel({
             />
           </div>
         )}
-        <div>
-          <Label htmlFor="helpText">Help Text</Label>
-          <Input
-            id="helpText"
-            className="mt-1"
-            value={selectedComponent.helpText || ''}
-            onChange={(e) =>
-              onUpdateComponent(selectedComponent.id, {
-                helpText: e.target.value,
-              })
-            }
-          />
-        </div>
+        {showFieldName && (
+          <div>
+            <Label htmlFor="helpText">Help Text</Label>
+            <Input
+              id="helpText"
+              className="mt-1"
+              value={selectedComponent.helpText || ''}
+              onChange={(e) =>
+                onUpdateComponent(selectedComponent.id, {
+                  helpText: e.target.value,
+                })
+              }
+            />
+          </div>
+        )}
 
         {showVariant && (
           <div>
@@ -176,7 +240,7 @@ export default function ConfigurationPanel({
         <div>
           <Label htmlFor="width">Width</Label>
           <Select
-            value={selectedComponent.width || '12'}
+            value={String(selectedComponent.width || '12')}
             onValueChange={(value) =>
               onUpdateComponent(selectedComponent.id, {
                 width: value as FormComponent['width'],
@@ -196,46 +260,48 @@ export default function ConfigurationPanel({
           </Select>
         </div>
 
-        <div className="space-y-2">
-          {showRequired && (
+        {showFieldName && (
+          <div className="space-y-2">
+            {showRequired && (
+              <div className="flex items-center justify-between">
+                <Label htmlFor="required">Required</Label>
+                <Switch
+                  id="required"
+                  checked={selectedComponent.required}
+                  onCheckedChange={(checked) =>
+                    onUpdateComponent(selectedComponent.id, {
+                      required: !!checked,
+                    })
+                  }
+                />
+              </div>
+            )}
             <div className="flex items-center justify-between">
-              <Label htmlFor="required">Required</Label>
+              <Label htmlFor="disabled">Disabled</Label>
               <Switch
-                id="required"
-                checked={selectedComponent.required}
+                id="disabled"
+                checked={selectedComponent.disabled}
                 onCheckedChange={(checked) =>
                   onUpdateComponent(selectedComponent.id, {
-                    required: !!checked,
+                    disabled: !!checked,
                   })
                 }
               />
             </div>
-          )}
-          <div className="flex items-center justify-between">
-            <Label htmlFor="disabled">Disabled</Label>
-            <Switch
-              id="disabled"
-              checked={selectedComponent.disabled}
-              onCheckedChange={(checked) =>
-                onUpdateComponent(selectedComponent.id, {
-                  disabled: !!checked,
-                })
-              }
-            />
+            <div className="flex items-center justify-between">
+              <Label htmlFor="readOnly">Read-only</Label>
+              <Switch
+                id="readOnly"
+                checked={selectedComponent.readOnly}
+                onCheckedChange={(checked) =>
+                  onUpdateComponent(selectedComponent.id, {
+                    readOnly: !!checked,
+                  })
+                }
+              />
+            </div>
           </div>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="readOnly">Read-only</Label>
-            <Switch
-              id="readOnly"
-              checked={selectedComponent.readOnly}
-              onCheckedChange={(checked) =>
-                onUpdateComponent(selectedComponent.id, {
-                  readOnly: !!checked,
-                })
-              }
-            />
-          </div>
-        </div>
+        )}
 
         {showLength && (
           <>

@@ -14,7 +14,9 @@ export type ComponentType =
   | 'tel'
   | 'url'
   | 'search'
-  | 'file';
+  | 'file'
+  | 'image'
+  | 'richtext';
 
 export type ComponentVariant = 'standard' | 'label-hidden' | 'label-inline';
 export type ComponentWidth = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';
@@ -35,6 +37,11 @@ export interface FormComponent {
   readOnly?: boolean;
   variant?: ComponentVariant;
   width?: ComponentWidth;
+  // Image component props
+  src?: string;
+  alt?: string;
+  // Rich text prop
+  value?: string;
 }
 
 export interface AvailableComponent {

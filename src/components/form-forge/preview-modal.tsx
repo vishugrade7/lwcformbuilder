@@ -26,6 +26,7 @@ import { cn } from '@/lib/utils';
 import { CalendarIcon } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Switch } from '../ui/switch';
+import Image from 'next/image';
 
 interface PreviewModalProps {
   isOpen: boolean;
@@ -34,7 +35,8 @@ interface PreviewModalProps {
 }
 
 const renderInput = (component: FormComponent) => {
-  const { id, type, placeholder, options, required, label } = component;
+  const { id, type, placeholder, options, required, label, src, alt, value } =
+    component;
   const inputId = `preview-input-${id}`;
 
   switch (type) {
@@ -114,6 +116,23 @@ const renderInput = (component: FormComponent) => {
           </Label>
         </div>
       );
+    case 'image':
+      return src ? (
+        <Image
+          src={src}
+          alt={alt || ''}
+          width={400}
+          height={300}
+          className="w-full h-auto object-contain rounded-md"
+        />
+      ) : null;
+    case 'richtext':
+      return (
+        <div
+          className="prose prose-sm max-w-none"
+          dangerouslySetInnerHTML={{ __html: value || '' }}
+        />
+      );
     default:
       return (
         <Input
@@ -134,7 +153,9 @@ const renderLabel = (component: FormComponent) => {
     variant === 'label-hidden' ||
     type === 'checkbox' ||
     type === 'switch' ||
-    variant === 'label-inline'
+    variant === 'label-inline' ||
+    type === 'image' ||
+    type === 'richtext'
   )
     return null;
 

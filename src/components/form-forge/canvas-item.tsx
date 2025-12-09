@@ -18,6 +18,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Calendar } from '../ui/calendar';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Switch } from '../ui/switch';
+import Image from 'next/image';
 
 interface CanvasItemProps {
   component: FormComponent;
@@ -27,7 +28,8 @@ interface CanvasItemProps {
 }
 
 const ComponentPreview = ({ component }: { component: FormComponent }) => {
-  const { type, label, placeholder, required, options, variant } = component;
+  const { type, label, placeholder, required, options, variant, src, alt, value } =
+    component;
   const id = `preview-${component.id}`;
   const hideLabel = variant === 'label-hidden';
 
@@ -98,6 +100,31 @@ const ComponentPreview = ({ component }: { component: FormComponent }) => {
             <Label htmlFor={id}>{label}</Label>
           </div>
         );
+      case 'image':
+        return (
+          <div className="w-full bg-muted rounded-md aspect-video flex items-center justify-center">
+            {src ? (
+              <Image
+                src={src}
+                alt={alt || 'placeholder'}
+                width={300}
+                height={200}
+                className="object-cover rounded-md"
+              />
+            ) : (
+              <span className="text-muted-foreground text-sm">Image</span>
+            )}
+          </div>
+        );
+      case 'richtext':
+        return (
+          <div
+            className="prose prose-sm max-w-none p-2 border rounded-md bg-muted"
+            dangerouslySetInnerHTML={{
+              __html: value || '<p>Rich text content...</p>',
+            }}
+          />
+        );
       default:
         return (
           <Input
@@ -116,7 +143,9 @@ const ComponentPreview = ({ component }: { component: FormComponent }) => {
       hideLabel ||
       type === 'checkbox' ||
       type === 'switch' ||
-      variant === 'label-inline'
+      variant === 'label-inline' ||
+      type === 'image' ||
+      type === 'richtext'
     )
       return null;
     return (

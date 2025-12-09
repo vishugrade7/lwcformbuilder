@@ -48,6 +48,17 @@ export default function FormForgeLayout() {
         newComponent.label = 'Enable Feature';
         newComponent.fieldName = toCamelCase(newComponent.label);
       }
+      if (componentType === 'image') {
+        newComponent.fieldName = '';
+        newComponent.label = 'Image';
+        newComponent.src = 'https://picsum.photos/seed/1/600/400';
+        newComponent.alt = 'Placeholder image';
+      }
+      if (componentType === 'richtext') {
+        newComponent.fieldName = '';
+        newComponent.label = 'Rich Text';
+        newComponent.value = '<h2>Rich Text</h2><p>This is some rich text content.</p>';
+      }
       setComponents((prev) => [...prev, newComponent]);
       setSelectedComponentId(newComponent.id);
     }

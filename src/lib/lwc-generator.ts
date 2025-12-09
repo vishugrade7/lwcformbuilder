@@ -18,6 +18,9 @@ export function generateLwcHtml(components: FormComponent[]): string {
         readOnly,
         variant,
         width,
+        src,
+        alt,
+        value,
       } = component;
 
       const commonProps = `label="${label}"
@@ -101,6 +104,16 @@ export function generateLwcHtml(components: FormComponent[]): string {
             ${helpText ? `message-toggle-active="" message-toggle-inactive=""` : ''}
         ></lightning-input>`;
           break;
+        case 'image':
+          componentHtml = `        <img src="${src}" alt="${
+            alt || ''
+          }" class="slds-image slds-image_responsive">`;
+          break;
+        case 'richtext':
+          componentHtml = `        <lightning-formatted-rich-text
+            value={${fieldName}Value}
+        ></lightning-formatted-rich-text>`;
+          break;
         default:
           return '';
       }
@@ -133,11 +146,14 @@ ${inputs}
 export function generateLwcJs(components: FormComponent[]): string {
   const properties = components
     .map((component) => {
-      if (component.type === 'dropdown' || component.type === 'radiogroup') {
-        const fieldName = component.fieldName;
-        const options =
-          component.options?.map((opt) => ({ label: opt, value: opt })) || [];
-        return `    ${fieldName}Options = ${JSON.stringify(options, null, 4)};`;
+      const { type, fieldName, value, options } = component;
+      if (type === 'dropdown' || type === 'radiogroup') {
+        const opts =
+          options?.map((opt) => ({ label: opt, value: opt })) || [];
+        return `    ${fieldName}Options = ${JSON.stringify(opts, null, 4)};`;
+      }
+      if (type === 'richtext') {
+        return `    ${fieldName}Value = \`${value || ''}\`;`;
       }
       return null;
     })

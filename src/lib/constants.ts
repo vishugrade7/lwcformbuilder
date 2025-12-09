@@ -14,6 +14,8 @@ import {
   Link,
   Search,
   File,
+  Image,
+  Text,
 } from 'lucide-react';
 
 export const AVAILABLE_COMPONENTS: AvailableComponent[] = [
@@ -31,4 +33,6 @@ export const AVAILABLE_COMPONENTS: AvailableComponent[] = [
   { name: 'URL', icon: Link, type: 'url' },
   { name: 'Search', icon: Search, type: 'search' },
   { name: 'File', icon: File, type: 'file' },
+  { name: 'Image', icon: Image, type: 'image' },
+  { name: 'Rich Text', icon: Text, type: 'richtext' },
 ];
