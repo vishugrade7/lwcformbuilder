@@ -9,10 +9,11 @@ import {
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '../ui/button';
-import { Check, Copy } from 'lucide-react';
+import { Check, Copy, Loader2 } from 'lucide-react';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useEffect, useState } from 'react';
 
 interface CodeModalProps {
   isOpen: boolean;
@@ -64,12 +65,31 @@ function CodeBlock({
   );
 }
 
+const GeneratingAnimation = () => (
+  <div className="flex flex-col items-center justify-center h-48 gap-4">
+    <Loader2 className="h-10 w-10 animate-spin text-primary" />
+    <p className="text-lg text-muted-foreground">Generating code...</p>
+  </div>
+);
+
 export default function CodeModal({
   isOpen,
   onOpenChange,
   htmlCode,
   jsCode,
 }: CodeModalProps) {
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsGenerating(true);
+      const timer = setTimeout(() => {
+        setIsGenerating(false);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-5xl">
@@ -80,18 +100,22 @@ export default function CodeModal({
           </DialogDescription>
         </DialogHeader>
         <div className="mt-4 max-h-[60vh] overflow-y-auto">
-          <Tabs defaultValue="html">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="html">form.html</TabsTrigger>
-              <TabsTrigger value="js">form.js</TabsTrigger>
-            </TabsList>
-            <TabsContent value="html">
-              <CodeBlock code={htmlCode} language="html" />
-            </TabsContent>
-            <TabsContent value="js">
-              <CodeBlock code={jsCode} language="javascript" />
-            </TabsContent>
-          </Tabs>
+          {isGenerating ? (
+            <GeneratingAnimation />
+          ) : (
+            <Tabs defaultValue="html">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="html">form.html</TabsTrigger>
+                <TabsTrigger value="js">form.js</TabsTrigger>
+              </TabsList>
+              <TabsContent value="html">
+                <CodeBlock code={htmlCode} language="html" />
+              </TabsContent>
+              <TabsContent value="js">
+                <CodeBlock code={jsCode} language="javascript" />
+              </TabsContent>
+            </Tabs>
+          )}
         </div>
       </DialogContent>
     </Dialog>
