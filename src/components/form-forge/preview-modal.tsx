@@ -33,6 +33,146 @@ interface PreviewModalProps {
   components: FormComponent[];
 }
 
+const renderInput = (component: FormComponent) => {
+  const { id, type, placeholder, options, required, label } = component;
+  const inputId = `preview-input-${id}`;
+
+  switch (type) {
+    case 'textarea':
+      return (
+        <Textarea
+          id={inputId}
+          placeholder={placeholder}
+          required={required}
+          className="mt-1"
+        />
+      );
+    case 'dropdown':
+      return (
+        <Select required={required}>
+          <SelectTrigger id={inputId} className="w-full">
+            <SelectValue placeholder={placeholder} />
+          </SelectTrigger>
+          <SelectContent>
+            {options?.map((opt, i) => (
+              <SelectItem key={i} value={opt}>
+                {opt}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      );
+    case 'checkbox':
+      return (
+        <div className="flex items-center space-x-2 pt-2">
+          <Checkbox id={inputId} required={required} />
+          <Label htmlFor={inputId} className="font-normal">
+            {label}
+            {required && <span className="text-destructive"> *</span>}
+          </Label>
+        </div>
+      );
+    case 'date':
+      return (
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={'outline'}
+              className={cn(
+                'w-full justify-start text-left font-normal',
+                !label && 'text-muted-foreground'
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              <span>Pick a date</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <Calendar mode="single" initialFocus required={required} />
+          </PopoverContent>
+        </Popover>
+      );
+    case 'radiogroup':
+      return (
+        <RadioGroup required={required} className="mt-2 space-y-2">
+          {options?.map((option, i) => (
+            <div key={i} className="flex items-center space-x-2">
+              <RadioGroupItem value={option} id={`${inputId}-${i}`} />
+              <Label htmlFor={`${inputId}-${i}`} className="font-normal">
+                {option}
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+      );
+    case 'switch':
+      return (
+        <div className="flex items-center space-x-2 pt-2">
+          <Switch id={inputId} />
+          <Label htmlFor={inputId} className="font-normal">
+            {label}
+          </Label>
+        </div>
+      );
+    default:
+      return (
+        <Input
+          id={inputId}
+          type={type}
+          placeholder={placeholder}
+          required={required}
+        />
+      );
+  }
+};
+
+const renderLabel = (component: FormComponent) => {
+  const { id, type, label, required, variant } = component;
+  const inputId = `preview-input-${id}`;
+
+  if (
+    variant === 'label-hidden' ||
+    type === 'checkbox' ||
+    type === 'switch' ||
+    variant === 'label-inline'
+  )
+    return null;
+
+  return (
+    <Label htmlFor={inputId}>
+      {label}
+      {required && <span className="text-destructive"> *</span>}
+    </Label>
+  );
+};
+
+const renderComponent = (component: FormComponent) => {
+  const { id, label, required, variant, type } = component;
+  const inputId = `preview-input-${id}`;
+  const widthClass = `col-span-${component.width || 12}`;
+
+  if (variant === 'label-inline' && type !== 'checkbox' && type !== 'switch') {
+    return (
+      <div key={id} className={cn('grid grid-cols-3 items-center', widthClass)}>
+        <Label htmlFor={inputId} className="text-right pr-4">
+          {label}
+          {required && <span className="text-destructive"> *</span>}
+        </Label>
+        <div className="col-span-2">{renderInput(component)}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div key={id} className={widthClass}>
+      {renderLabel(component)}
+      <div className={cn(renderLabel(component) && 'mt-1')}>
+        {renderInput(component)}
+      </div>
+    </div>
+  );
+};
+
 export default function PreviewModal({
   isOpen,
   onOpenChange,
@@ -40,7 +180,7 @@ export default function PreviewModal({
 }: PreviewModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>Form Preview</DialogTitle>
           <DialogDescription>
@@ -48,195 +188,14 @@ export default function PreviewModal({
           </DialogDescription>
         </DialogHeader>
         <div className="mt-4 p-6 border rounded-lg max-h-[60vh] overflow-y-auto">
-          <form className="space-y-6">
-            {components.map((component) => {
-              const {
-                id,
-                type,
-                label,
-                placeholder,
-                required,
-                options,
-                variant,
-              } = component;
-              const inputId = `preview-input-${id}`;
-
-              const hideLabel = variant === 'label-hidden';
-
-              if (variant === 'label-inline') {
-                return (
-                  <div key={id} className="grid grid-cols-3 items-center gap-4">
-                    <Label htmlFor={inputId} className="text-right">
-                      {label}
-                      {required && <span className="text-destructive"> *</span>}
-                    </Label>
-                    <div className="col-span-2">
-                      <Input
-                        id={inputId}
-                        type={type}
-                        placeholder={placeholder}
-                        required={required}
-                      />
-                    </div>
-                  </div>
-                );
-              }
-
-              switch (type) {
-                case 'textarea':
-                  return (
-                    <div key={id}>
-                      {!hideLabel && (
-                        <Label htmlFor={inputId}>
-                          {label}
-                          {required && (
-                            <span className="text-destructive"> *</span>
-                          )}
-                        </Label>
-                      )}
-                      <Textarea
-                        id={inputId}
-                        placeholder={placeholder}
-                        required={required}
-                        className="mt-1"
-                      />
-                    </div>
-                  );
-                case 'dropdown':
-                  return (
-                    <div key={id}>
-                      {!hideLabel && (
-                        <Label htmlFor={inputId}>
-                          {label}
-                          {required && (
-                            <span className="text-destructive"> *</span>
-                          )}
-                        </Label>
-                      )}
-                      <Select required={required}>
-                        <SelectTrigger id={inputId} className="mt-1">
-                          <SelectValue placeholder={placeholder} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {options?.map((opt, i) => (
-                            <SelectItem key={i} value={opt}>
-                              {opt}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  );
-                case 'checkbox':
-                  return (
-                    <div key={id} className="flex items-center space-x-2">
-                      <Checkbox id={inputId} required={required} />
-                      <Label htmlFor={inputId} className="font-normal">
-                        {label}
-                        {required && (
-                          <span className="text-destructive"> *</span>
-                        )}
-                      </Label>
-                    </div>
-                  );
-                case 'date':
-                  return (
-                    <div key={id}>
-                      {!hideLabel && (
-                        <Label>
-                          {label}
-                          {required && (
-                            <span className="text-destructive"> *</span>
-                          )}
-                        </Label>
-                      )}
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={'outline'}
-                            className={cn(
-                              'w-full justify-start text-left font-normal mt-1',
-                              !label && 'text-muted-foreground'
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            <span>Pick a date</span>
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            initialFocus
-                            required={required}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  );
-                case 'radiogroup':
-                  return (
-                    <div key={id}>
-                      {!hideLabel && (
-                        <Label>
-                          {label}
-                          {required && (
-                            <span className="text-destructive"> *</span>
-                          )}
-                        </Label>
-                      )}
-                      <RadioGroup
-                        required={required}
-                        className="mt-2 space-y-2"
-                      >
-                        {options?.map((option, i) => (
-                          <div key={i} className="flex items-center space-x-2">
-                            <RadioGroupItem
-                              value={option}
-                              id={`${inputId}-${i}`}
-                            />
-                            <Label
-                              htmlFor={`${inputId}-${i}`}
-                              className="font-normal"
-                            >
-                              {option}
-                            </Label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                    </div>
-                  );
-                case 'switch':
-                  return (
-                    <div key={id} className="flex items-center space-x-2">
-                      <Switch id={inputId} />
-                      <Label htmlFor={inputId} className="font-normal">
-                        {label}
-                      </Label>
-                    </div>
-                  );
-                default:
-                  return (
-                    <div key={id}>
-                      {!hideLabel && (
-                        <Label htmlFor={inputId}>
-                          {label}
-                          {required && (
-                            <span className="text-destructive"> *</span>
-                          )}
-                        </Label>
-                      )}
-                      <Input
-                        id={inputId}
-                        type={type}
-                        placeholder={placeholder}
-                        required={required}
-                        className="mt-1"
-                      />
-                    </div>
-                  );
-              }
-            })}
-            <div className="flex justify-end pt-4">
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="w-full space-y-4"
+          >
+            <div className="grid grid-cols-12 gap-x-4 gap-y-6">
+              {components.map((component) => renderComponent(component))}
+            </div>
+            <div className="flex justify-end pt-4 col-span-12">
               <Button type="submit">Submit</Button>
             </div>
           </form>
