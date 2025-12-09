@@ -27,26 +27,16 @@ interface CanvasItemProps {
 }
 
 const ComponentPreview = ({ component }: { component: FormComponent }) => {
-  const { type, label, placeholder, required, options } = component;
+  const { type, label, placeholder, required, options, variant } = component;
   const id = `preview-${component.id}`;
-  switch (type) {
-    case 'textarea':
-      return (
-        <div>
-          <Label htmlFor={id}>
-            {label}
-            {required && <span className="text-destructive"> *</span>}
-          </Label>
-          <Textarea id={id} placeholder={placeholder} readOnly />
-        </div>
-      );
-    case 'dropdown':
-      return (
-        <div>
-          <Label htmlFor={id}>
-            {label}
-            {required && <span className="text-destructive"> *</span>}
-          </Label>
+  const hideLabel = variant === 'label-hidden';
+
+  const renderInput = () => {
+    switch (type) {
+      case 'textarea':
+        return <Textarea id={id} placeholder={placeholder} readOnly />;
+      case 'dropdown':
+        return (
           <Select>
             <SelectTrigger id={id}>
               <SelectValue placeholder={placeholder || 'Select an option'} />
@@ -59,31 +49,25 @@ const ComponentPreview = ({ component }: { component: FormComponent }) => {
               ))}
             </SelectContent>
           </Select>
-        </div>
-      );
-    case 'checkbox':
-      return (
-        <div className="flex items-center space-x-2">
-          <Checkbox id={id} />
-          <Label htmlFor={id}>
-            {label}
-            {required && <span className="text-destructive"> *</span>}
-          </Label>
-        </div>
-      );
-    case 'date':
-      return (
-        <div>
-          <Label htmlFor={id}>
-            {label}
-            {required && <span className="text-destructive"> *</span>}
-          </Label>
+        );
+      case 'checkbox':
+        return (
+          <div className="flex items-center space-x-2">
+            <Checkbox id={id} />
+            <Label htmlFor={id}>
+              {label}
+              {required && <span className="text-destructive"> *</span>}
+            </Label>
+          </div>
+        );
+      case 'date':
+        return (
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant={'outline'}
                 className={cn(
-                  'w-full justify-start text-left font-normal mt-1',
+                  'w-full justify-start text-left font-normal',
                   !label && 'text-muted-foreground'
                 )}
               >
@@ -95,15 +79,9 @@ const ComponentPreview = ({ component }: { component: FormComponent }) => {
               <Calendar mode="single" initialFocus />
             </PopoverContent>
           </Popover>
-        </div>
-      );
-    case 'radiogroup':
-      return (
-        <div>
-          <Label htmlFor={id}>
-            {label}
-            {required && <span className="text-destructive"> *</span>}
-          </Label>
+        );
+      case 'radiogroup':
+        return (
           <RadioGroup id={id} className="mt-2 space-y-2">
             {options?.map((option, i) => (
               <div key={i} className="flex items-center space-x-2">
@@ -112,22 +90,16 @@ const ComponentPreview = ({ component }: { component: FormComponent }) => {
               </div>
             ))}
           </RadioGroup>
-        </div>
-      );
-    case 'switch':
-      return (
-        <div className="flex items-center space-x-2">
-          <Switch id={id} />
-          <Label htmlFor={id}>{label}</Label>
-        </div>
-      );
-    default:
-      return (
-        <div>
-          <Label htmlFor={id}>
-            {label}
-            {required && <span className="text-destructive"> *</span>}
-          </Label>
+        );
+      case 'switch':
+        return (
+          <div className="flex items-center space-x-2">
+            <Switch id={id} />
+            <Label htmlFor={id}>{label}</Label>
+          </div>
+        );
+      default:
+        return (
           <Input
             id={id}
             type={type}
@@ -135,9 +107,44 @@ const ComponentPreview = ({ component }: { component: FormComponent }) => {
             readOnly
             className="bg-muted"
           />
-        </div>
-      );
+        );
+    }
+  };
+
+  const renderLabel = () => {
+    if (
+      hideLabel ||
+      type === 'checkbox' ||
+      type === 'switch' ||
+      variant === 'label-inline'
+    )
+      return null;
+    return (
+      <Label htmlFor={id}>
+        {label}
+        {required && <span className="text-destructive"> *</span>}
+      </Label>
+    );
+  };
+
+  if (variant === 'label-inline' && type !== 'checkbox' && type !== 'switch') {
+    return (
+      <div className="grid grid-cols-3 items-center gap-4">
+        <Label htmlFor={id} className="text-right">
+          {label}
+          {required && <span className="text-destructive"> *</span>}
+        </Label>
+        <div className="col-span-2">{renderInput()}</div>
+      </div>
+    );
   }
+
+  return (
+    <div>
+      {renderLabel()}
+      <div className={cn(renderLabel() && 'mt-1')}>{renderInput()}</div>
+    </div>
+  );
 };
 
 export default function CanvasItem({
@@ -150,6 +157,9 @@ export default function CanvasItem({
     e.stopPropagation();
     onDelete(component.id);
   };
+
+  const widthClass = `col-span-${component.width || 12}`;
+
   return (
     <div
       onClick={() => onSelect(component.id)}
@@ -157,7 +167,8 @@ export default function CanvasItem({
         'p-4 rounded-lg cursor-pointer relative group transition-all',
         isSelected
           ? 'bg-primary/5 border-2 border-primary'
-          : 'bg-transparent border-2 border-transparent hover:bg-accent'
+          : 'bg-transparent border-2 border-transparent hover:bg-accent',
+        widthClass
       )}
       aria-selected={isSelected}
     >
