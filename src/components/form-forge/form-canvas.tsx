@@ -78,7 +78,8 @@ export default function FormCanvas({
               <div
                 key={component.id}
                 className={cn(
-                  'col-span-12 transition-all duration-200',
+                  `col-span-${component.width || 12}`,
+                  'transition-all duration-200',
                   dragOverId === component.id &&
                     'pt-10 -mt-10 border-t-2 border-primary'
                 )}

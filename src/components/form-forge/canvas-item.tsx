@@ -238,8 +238,6 @@ export default function CanvasItem({
     onDelete(component.id);
   };
 
-  const widthClass = `col-span-${component.width || 12}`;
-
   return (
     <div
       draggable
@@ -256,7 +254,7 @@ export default function CanvasItem({
       )}
       aria-selected={isSelected}
     >
-      <div className={cn('pointer-events-none', widthClass)}>
+      <div className={cn('pointer-events-none')}>
         <ComponentPreview component={component} />
       </div>
 
