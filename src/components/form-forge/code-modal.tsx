@@ -46,11 +46,11 @@ export default function CodeModal({
   isOpen,
   onOpenChange,
   htmlCode,
-  jsCode,
+jsCode,
 }: CodeModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl">
+      <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle>Generated LWC Code</DialogTitle>
           <DialogDescription>
