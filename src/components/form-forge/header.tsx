@@ -2,6 +2,12 @@
 
 import { Button } from '@/components/ui/button';
 import { Code, Eye, LayoutGrid } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface HeaderProps {
   onPreviewClick: () => void;
@@ -18,14 +24,37 @@ export default function Header({ onPreviewClick, onCodeClick }: HeaderProps) {
         </h1>
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="outline" onClick={onPreviewClick}>
-          <Eye />
-          Preview
-        </Button>
-        <Button onClick={onCodeClick}>
-          <Code />
-          Generate Code
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={onPreviewClick}
+                aria-label="Preview"
+              >
+                <Eye className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Preview</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="icon"
+                onClick={onCodeClick}
+                aria-label="Generate Code"
+              >
+                <Code className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Generate Code</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </header>
   );
