@@ -21,7 +21,7 @@ export default function Header({ onPreviewClick, onCodeClick }: HeaderProps) {
       <div className="flex items-center gap-3">
         <LayoutGrid className="h-7 w-7 text-primary" />
         <h1 className="text-2xl font-bold text-primary font-headline tracking-tight">
-          FormForge
+          LWC form builder
         </h1>
       </div>
       <div className="flex items-center gap-2">

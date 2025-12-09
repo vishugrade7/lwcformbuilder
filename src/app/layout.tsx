@@ -4,7 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
-  title: 'FormForge',
+  title: 'LWC Form Builder',
   description: 'A dynamic LWC form generator app.',
 };
 
