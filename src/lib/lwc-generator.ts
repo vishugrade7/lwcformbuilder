@@ -35,6 +35,9 @@ export function generateLwcHtml(components: FormComponent[]): string {
         case 'email':
         case 'password':
         case 'number':
+        case 'tel':
+        case 'url':
+        case 'search':
           componentHtml = `        <lightning-input
             type="${type}"
             ${commonProps}
@@ -42,6 +45,16 @@ export function generateLwcHtml(components: FormComponent[]): string {
             ${minLength !== undefined ? `min-length="${minLength}"` : ''}
             ${maxLength !== undefined ? `max-length="${maxLength}"` : ''}
             ${pattern ? `pattern="${pattern}"` : ''}
+        ></lightning-input>`;
+          break;
+        case 'file':
+          componentHtml = `        <lightning-input
+            type="file"
+            label="${label}"
+            name="${fieldName}"
+            ${required ? 'required' : ''}
+            ${disabled ? 'disabled' : ''}
+            ${helpText ? `field-level-help="${helpText}"` : ''}
         ></lightning-input>`;
           break;
         case 'textarea':

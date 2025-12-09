@@ -62,6 +62,9 @@ export default function ConfigurationPanel({
     'number',
     'textarea',
     'dropdown',
+    'tel',
+    'url',
+    'search',
   ].includes(selectedComponent.type);
 
   const showRequired = !['switch'].includes(selectedComponent.type);
@@ -70,18 +73,24 @@ export default function ConfigurationPanel({
     selectedComponent.type
   );
 
-  const showLength = ['text', 'password', 'textarea'].includes(
+  const showLength = ['text', 'password', 'textarea', 'tel', 'url'].includes(
     selectedComponent.type
   );
-  const showPattern = ['text', 'password', 'email', 'number'].includes(
-    selectedComponent.type
-  );
+  const showPattern = [
+    'text',
+    'password',
+    'email',
+    'number',
+    'tel',
+    'url',
+  ].includes(selectedComponent.type);
 
   const showVariant = ![
     'checkbox',
     'switch',
     'radiogroup',
     'date',
+    'file',
   ].includes(selectedComponent.type);
 
   return (

@@ -10,6 +10,10 @@ import {
   MessageSquare,
   CalendarDays,
   ToggleRight,
+  Phone,
+  Link,
+  Search,
+  File,
 } from 'lucide-react';
 
 export const AVAILABLE_COMPONENTS: AvailableComponent[] = [
@@ -23,4 +27,8 @@ export const AVAILABLE_COMPONENTS: AvailableComponent[] = [
   { name: 'Date', icon: CalendarDays, type: 'date' },
   { name: 'Radio Group', icon: CircleDot, type: 'radiogroup' },
   { name: 'Switch', icon: ToggleRight, type: 'switch' },
+  { name: 'Phone', icon: Phone, type: 'tel' },
+  { name: 'URL', icon: Link, type: 'url' },
+  { name: 'Search', icon: Search, type: 'search' },
+  { name: 'File', icon: File, type: 'file' },
 ];

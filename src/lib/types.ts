@@ -10,7 +10,11 @@ export type ComponentType =
   | 'textarea'
   | 'date'
   | 'radiogroup'
-  | 'switch';
+  | 'switch'
+  | 'tel'
+  | 'url'
+  | 'search'
+  | 'file';
 
 export type ComponentVariant = 'standard' | 'label-hidden' | 'label-inline';
 export type ComponentWidth = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';
