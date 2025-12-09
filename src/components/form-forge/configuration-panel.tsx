@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { FormComponent } from '@/lib/types';
 import { Plus, X } from 'lucide-react';
+import { Switch } from '../ui/switch';
 
 interface ConfigurationPanelProps {
   selectedComponent: FormComponent | null;
@@ -62,21 +63,40 @@ export default function ConfigurationPanel({
     selectedComponent.type
   );
 
+  const showLength = ['text', 'password', 'textarea'].includes(
+    selectedComponent.type
+  );
+  const showPattern = ['text', 'password', 'email', 'number'].includes(
+    selectedComponent.type
+  );
+
   return (
     <aside className="w-80 p-4 border-l bg-card overflow-y-auto hidden lg:block">
       <h2 className="text-xl font-semibold mb-6">Configuration</h2>
       <div className="space-y-6">
         <div>
+          <Label htmlFor="fieldName">Field Name</Label>
+          <Input
+            id="fieldName"
+            value={selectedComponent.fieldName}
+            onChange={(e) =>
+              onUpdateComponent(selectedComponent.id, {
+                fieldName: e.target.value,
+              })
+            }
+            className="mt-1"
+          />
+        </div>
+        <div>
           <Label htmlFor="label">Label</Label>
-          <div className="flex items-center gap-1 mt-1">
-            <Input
-              id="label"
-              value={selectedComponent.label}
-              onChange={(e) =>
-                onUpdateComponent(selectedComponent.id, { label: e.target.value })
-              }
-            />
-          </div>
+          <Input
+            id="label"
+            value={selectedComponent.label}
+            onChange={(e) =>
+              onUpdateComponent(selectedComponent.id, { label: e.target.value })
+            }
+            className="mt-1"
+          />
         </div>
         {showPlaceholder && (
           <div>
@@ -93,18 +113,111 @@ export default function ConfigurationPanel({
             />
           </div>
         )}
-        {showRequired && (
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="required"
-              checked={selectedComponent.required}
+        <div>
+          <Label htmlFor="helpText">Help Text</Label>
+          <Input
+            id="helpText"
+            className="mt-1"
+            value={selectedComponent.helpText || ''}
+            onChange={(e) =>
+              onUpdateComponent(selectedComponent.id, {
+                helpText: e.target.value,
+              })
+            }
+          />
+        </div>
+
+        <div className="space-y-2">
+          {showRequired && (
+            <div className="flex items-center justify-between">
+              <Label htmlFor="required">Required</Label>
+              <Switch
+                id="required"
+                checked={selectedComponent.required}
+                onCheckedChange={(checked) =>
+                  onUpdateComponent(selectedComponent.id, {
+                    required: !!checked,
+                  })
+                }
+              />
+            </div>
+          )}
+          <div className="flex items-center justify-between">
+            <Label htmlFor="disabled">Disabled</Label>
+            <Switch
+              id="disabled"
+              checked={selectedComponent.disabled}
               onCheckedChange={(checked) =>
                 onUpdateComponent(selectedComponent.id, {
-                  required: !!checked,
+                  disabled: !!checked,
                 })
               }
             />
-            <Label htmlFor="required">Required</Label>
+          </div>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="readOnly">Read-only</Label>
+            <Switch
+              id="readOnly"
+              checked={selectedComponent.readOnly}
+              onCheckedChange={(checked) =>
+                onUpdateComponent(selectedComponent.id, {
+                  readOnly: !!checked,
+                })
+              }
+            />
+          </div>
+        </div>
+
+        {showLength && (
+          <>
+            <div>
+              <Label htmlFor="minLength">Min Length</Label>
+              <Input
+                id="minLength"
+                type="number"
+                className="mt-1"
+                value={selectedComponent.minLength || ''}
+                onChange={(e) =>
+                  onUpdateComponent(selectedComponent.id, {
+                    minLength: e.target.value
+                      ? parseInt(e.target.value)
+                      : undefined,
+                  })
+                }
+              />
+            </div>
+            <div>
+              <Label htmlFor="maxLength">Max Length</Label>
+              <Input
+                id="maxLength"
+                type="number"
+                className="mt-1"
+                value={selectedComponent.maxLength || ''}
+                onChange={(e) =>
+                  onUpdateComponent(selectedComponent.id, {
+                    maxLength: e.target.value
+                      ? parseInt(e.target.value)
+                      : undefined,
+                  })
+                }
+              />
+            </div>
+          </>
+        )}
+
+        {showPattern && (
+          <div>
+            <Label htmlFor="pattern">Pattern</Label>
+            <Input
+              id="pattern"
+              className="mt-1"
+              value={selectedComponent.pattern || ''}
+              onChange={(e) =>
+                onUpdateComponent(selectedComponent.id, {
+                  pattern: e.target.value,
+                })
+              }
+            />
           </div>
         )}
 

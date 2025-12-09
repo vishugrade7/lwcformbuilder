@@ -1,18 +1,29 @@
 import type { FormComponent } from './types';
 
-function toCamelCase(str: string): string {
-  // Replace spaces and special characters, and capitalize the next letter
-  let camel = str
-    .replace(/[^a-zA-Z0-9]+(.)?/g, (m, chr) => (chr ? chr.toUpperCase() : ''))
-    .replace(/^./, (str) => str.toLowerCase());
-  return camel;
-}
-
 export function generateLwcHtml(components: FormComponent[]): string {
   const inputs = components
     .map((component) => {
-      const { type, label, placeholder, required, options } = component;
-      const fieldName = toCamelCase(label);
+      const {
+        type,
+        label,
+        fieldName,
+        placeholder,
+        required,
+        options,
+        helpText,
+        minLength,
+        maxLength,
+        pattern,
+        disabled,
+        readOnly,
+      } = component;
+
+      const commonProps = `label="${label}"
+            name="${fieldName}"
+            ${required ? 'required' : ''}
+            ${disabled ? 'disabled' : ''}
+            ${readOnly ? 'readonly' : ''}
+            ${helpText ? `help-text="${helpText}"` : ''}`;
 
       switch (type) {
         case 'text':
@@ -21,53 +32,46 @@ export function generateLwcHtml(components: FormComponent[]): string {
         case 'number':
           return `        <lightning-input
             type="${type}"
-            label="${label}"
-            name="${fieldName}"
+            ${commonProps}
             ${placeholder ? `placeholder="${placeholder}"` : ''}
-            ${required ? 'required' : ''}
+            ${minLength !== undefined ? `min-length="${minLength}"` : ''}
+            ${maxLength !== undefined ? `max-length="${maxLength}"` : ''}
+            ${pattern ? `pattern="${pattern}"` : ''}
             class="slds-m-bottom_small"
         ></lightning-input>`;
         case 'textarea':
           return `        <lightning-textarea
-            label="${label}"
-            name="${fieldName}"
+            ${commonProps}
             ${placeholder ? `placeholder="${placeholder}"` : ''}
-            ${required ? 'required' : ''}
+            ${minLength !== undefined ? `min-length="${minLength}"` : ''}
+            ${maxLength !== undefined ? `max-length="${maxLength}"` : ''}
             class="slds-m-bottom_small"
         ></lightning-textarea>`;
         case 'checkbox':
           return `        <lightning-input
             type="checkbox"
-            label="${label}"
-            name="${fieldName}"
-            ${required ? 'required' : ''}
+            ${commonProps}
             class="slds-m-bottom_small"
         ></lightning-input>`;
         case 'dropdown':
           return `        <lightning-combobox
-            name="${fieldName}"
-            label="${label}"
+            ${commonProps}
             value={value}
             placeholder="${placeholder || 'Select an Option'}"
             options={${fieldName}Options}
-            ${required ? 'required' : ''}
             class="slds-m-bottom_small"
         ></lightning-combobox>`;
         case 'date':
           return `        <lightning-input
             type="date"
-            label="${label}"
-            name="${fieldName}"
-            ${required ? 'required' : ''}
+            ${commonProps}
             class="slds-m-bottom_small"
         ></lightning-input>`;
         case 'radiogroup':
           return `        <lightning-radio-group
-            name="${fieldName}"
-            label="${label}"
+            ${commonProps}
             options={${fieldName}Options}
             value={value}
-            ${required ? 'required' : ''}
             class="slds-m-bottom_small"
         ></lightning-radio-group>`;
         case 'switch':
@@ -75,6 +79,8 @@ export function generateLwcHtml(components: FormComponent[]): string {
             type="toggle"
             label="${label}"
             name="${fieldName}"
+            ${disabled ? 'disabled' : ''}
+            ${helpText ? `help-text="${helpText}"` : ''}
             class="slds-m-bottom_small"
         ></lightning-input>`;
         default:
@@ -103,7 +109,7 @@ export function generateLwcJs(components: FormComponent[]): string {
   const properties = components
     .map((component) => {
       if (component.type === 'dropdown' || component.type === 'radiogroup') {
-        const fieldName = toCamelCase(component.label);
+        const fieldName = component.fieldName;
         const options =
           component.options?.map((opt) => ({ label: opt, value: opt })) || [];
         return `    ${fieldName}Options = ${JSON.stringify(options, null, 4)};`;

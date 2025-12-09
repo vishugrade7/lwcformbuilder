@@ -15,10 +15,17 @@ export type ComponentType =
 export interface FormComponent {
   id: string;
   type: ComponentType;
+  fieldName: string;
   label: string;
   placeholder?: string;
   required?: boolean;
   options?: string[]; // For dropdown, radiogroup
+  helpText?: string;
+  minLength?: number;
+  maxLength?: number;
+  pattern?: string;
+  disabled?: boolean;
+  readOnly?: boolean;
 }
 
 export interface AvailableComponent {

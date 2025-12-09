@@ -11,6 +11,12 @@ import PreviewModal from './preview-modal';
 import CodeModal from './code-modal';
 import { generateLwcHtml, generateLwcJs } from '@/lib/lwc-generator';
 
+function toCamelCase(str: string): string {
+  return str
+    .replace(/[^a-zA-Z0-9]+(.)?/g, (m, chr) => (chr ? chr.toUpperCase() : ''))
+    .replace(/^./, (str) => str.toLowerCase());
+}
+
 export default function FormForgeLayout() {
   const [components, setComponents] = useState<FormComponent[]>([]);
   const [selectedComponentId, setSelectedComponentId] = useState<string | null>(
@@ -25,10 +31,12 @@ export default function FormForgeLayout() {
       'componentType'
     ) as FormComponent['type'];
     if (componentType) {
+      const baseLabel = `New ${componentType}`;
       const newComponent: FormComponent = {
         id: nanoid(),
         type: componentType,
-        label: `New ${componentType}`,
+        label: baseLabel,
+        fieldName: toCamelCase(baseLabel),
         required: false,
       };
       if (componentType === 'dropdown' || componentType === 'radiogroup') {
@@ -36,6 +44,7 @@ export default function FormForgeLayout() {
       }
       if (componentType === 'switch') {
         newComponent.label = 'Enable Feature';
+        newComponent.fieldName = toCamelCase(newComponent.label);
       }
       setComponents((prev) => [...prev, newComponent]);
       setSelectedComponentId(newComponent.id);
