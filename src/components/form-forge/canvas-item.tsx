@@ -2,7 +2,7 @@
 import { cn } from '@/lib/utils';
 import type { FormComponent } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { CalendarIcon, Trash2 } from 'lucide-react';
+import { CalendarIcon, GripVertical, Trash2 } from 'lucide-react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
@@ -25,6 +25,10 @@ interface CanvasItemProps {
   isSelected: boolean;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
+  onDragStart: (e: React.DragEvent, id: string) => void;
+  onDragOver: (e: React.DragEvent, id: string) => void;
+  onDragEnd: (e: React.DragEvent) => void;
+  isDragging: boolean;
 }
 
 const ComponentPreview = ({ component }: { component: FormComponent }) => {
@@ -181,6 +185,10 @@ export default function CanvasItem({
   isSelected,
   onSelect,
   onDelete,
+  onDragStart,
+  onDragOver,
+  onDragEnd,
+  isDragging,
 }: CanvasItemProps) {
   const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -191,18 +199,31 @@ export default function CanvasItem({
 
   return (
     <div
+      draggable
+      onDragStart={(e) => onDragStart(e, component.id)}
+      onDragOver={(e) => onDragOver(e, component.id)}
+      onDragEnd={onDragEnd}
       onClick={() => onSelect(component.id)}
       className={cn(
         'p-4 rounded-lg cursor-pointer relative group transition-all',
         isSelected
           ? 'bg-primary/5 border-2 border-primary'
           : 'bg-transparent border-2 border-transparent hover:bg-accent',
-        widthClass
+        isDragging && 'opacity-50',
       )}
       aria-selected={isSelected}
     >
-      <div className="pointer-events-none">
+      <div className={cn('pointer-events-none', widthClass)}>
         <ComponentPreview component={component} />
+      </div>
+
+      <div
+        className={cn(
+          'absolute top-1/2 -translate-y-1/2 -left-1 h-8 w-6 items-center justify-center rounded-l-md bg-transparent opacity-0 group-hover:opacity-100 transition-opacity',
+          isSelected && 'opacity-100'
+        )}
+      >
+        <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
       </div>
 
       <Button

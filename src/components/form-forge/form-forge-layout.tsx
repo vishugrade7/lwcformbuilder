@@ -64,6 +64,21 @@ export default function FormForgeLayout() {
     }
   };
 
+  const handleReorder = (draggedId: string, targetId: string) => {
+    setComponents((prev) => {
+      const draggedIndex = prev.findIndex((c) => c.id === draggedId);
+      const targetIndex = prev.findIndex((c) => c.id === targetId);
+
+      if (draggedIndex === -1 || targetIndex === -1) return prev;
+
+      const newComponents = [...prev];
+      const [draggedItem] = newComponents.splice(draggedIndex, 1);
+      newComponents.splice(targetIndex, 0, draggedItem);
+
+      return newComponents;
+    });
+  };
+
   const handleSelectComponent = (id: string) => {
     setSelectedComponentId(id);
   };
@@ -101,6 +116,7 @@ export default function FormForgeLayout() {
           onSelectComponent={handleSelectComponent}
           onDeleteComponent={handleDeleteComponent}
           selectedComponentId={selectedComponentId}
+          onReorder={handleReorder}
         />
         <ConfigurationPanel
           selectedComponent={selectedComponent}
