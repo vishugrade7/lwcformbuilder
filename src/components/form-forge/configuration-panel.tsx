@@ -153,7 +153,7 @@ export default function ConfigurationPanel({
                   fieldName: e.target.value,
                 })
               }
-              className="mt-1"
+              className="mt-1 rounded-full"
             />
           </div>
         )}
@@ -168,7 +168,7 @@ export default function ConfigurationPanel({
                   label: e.target.value,
                 })
               }
-              className="mt-1"
+              className="mt-1 rounded-full"
             />
           </div>
         )}
@@ -185,7 +185,7 @@ export default function ConfigurationPanel({
                     src: e.target.value,
                   })
                 }
-                className="mt-1"
+                className="mt-1 rounded-full"
               />
             </div>
             <div>
@@ -198,7 +198,7 @@ export default function ConfigurationPanel({
                     alt: e.target.value,
                   })
                 }
-                className="mt-1"
+                className="mt-1 rounded-full"
               />
             </div>
           </>
@@ -215,7 +215,7 @@ export default function ConfigurationPanel({
                   value: e.target.value,
                 })
               }
-              className="mt-1 h-32"
+              className="mt-1 h-32 rounded-2xl"
             />
           </div>
         )}
@@ -244,6 +244,7 @@ export default function ConfigurationPanel({
                     onChange={(e) =>
                       handleColumnChange(index, 'label', e.target.value)
                     }
+                    className="rounded-full"
                   />
                   <Input
                     placeholder="Field Name"
@@ -251,11 +252,12 @@ export default function ConfigurationPanel({
                     onChange={(e) =>
                       handleColumnChange(index, 'fieldName', e.target.value)
                     }
+                    className="rounded-full"
                   />
                 </div>
               ))}
             </div>
-            <Button variant="outline" size="sm" onClick={addColumn}>
+            <Button variant="outline" size="sm" onClick={addColumn} className="rounded-full">
               <Plus className="mr-2 h-4 w-4" /> Add Column
             </Button>
           </div>
@@ -266,7 +268,7 @@ export default function ConfigurationPanel({
             <Label htmlFor="placeholder">Placeholder</Label>
             <Input
               id="placeholder"
-              className="mt-1"
+              className="mt-1 rounded-full"
               value={selectedComponent.placeholder || ''}
               onChange={(e) =>
                 onUpdateComponent(selectedComponent.id, {
@@ -281,7 +283,7 @@ export default function ConfigurationPanel({
             <Label htmlFor="helpText">Help Text</Label>
             <Input
               id="helpText"
-              className="mt-1"
+              className="mt-1 rounded-full"
               value={selectedComponent.helpText || ''}
               onChange={(e) =>
                 onUpdateComponent(selectedComponent.id, {
@@ -303,7 +305,7 @@ export default function ConfigurationPanel({
                 })
               }
             >
-              <SelectTrigger id="variant" className="mt-1">
+              <SelectTrigger id="variant" className="mt-1 rounded-full">
                 <SelectValue placeholder="Select variant" />
               </SelectTrigger>
               <SelectContent>
@@ -325,7 +327,7 @@ export default function ConfigurationPanel({
               })
             }
           >
-            <SelectTrigger id="width" className="mt-1">
+            <SelectTrigger id="width" className="mt-1 rounded-full">
               <SelectValue placeholder="Select width" />
             </SelectTrigger>
             <SelectContent>
@@ -388,7 +390,7 @@ export default function ConfigurationPanel({
               <Input
                 id="minLength"
                 type="number"
-                className="mt-1"
+                className="mt-1 rounded-full"
                 value={selectedComponent.minLength || ''}
                 onChange={(e) =>
                   onUpdateComponent(selectedComponent.id, {
@@ -404,7 +406,7 @@ export default function ConfigurationPanel({
               <Input
                 id="maxLength"
                 type="number"
-                className="mt-1"
+                className="mt-1 rounded-full"
                 value={selectedComponent.maxLength || ''}
                 onChange={(e) =>
                   onUpdateComponent(selectedComponent.id, {
@@ -423,7 +425,7 @@ export default function ConfigurationPanel({
             <Label htmlFor="pattern">Pattern</Label>
             <Input
               id="pattern"
-              className="mt-1"
+              className="mt-1 rounded-full"
               value={selectedComponent.pattern || ''}
               onChange={(e) =>
                 onUpdateComponent(selectedComponent.id, {
@@ -443,6 +445,7 @@ export default function ConfigurationPanel({
                   <Input
                     value={option}
                     onChange={(e) => handleOptionChange(index, e.target.value)}
+                    className="rounded-full"
                   />
                   <Button
                     variant="ghost"
@@ -454,7 +457,7 @@ export default function ConfigurationPanel({
                 </div>
               ))}
             </div>
-            <Button variant="outline" size="sm" onClick={addOption}>
+            <Button variant="outline" size="sm" onClick={addOption} className="rounded-full">
               <Plus className="mr-2 h-4 w-4" /> Add Option
             </Button>
           </div>
