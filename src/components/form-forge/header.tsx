@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { ThemeToggleButton } from './theme-toggle-button';
+import Link from 'next/link';
 
 interface HeaderProps {
   onPreviewClick: () => void;
@@ -29,8 +30,13 @@ export default function Header({ onPreviewClick, onCodeClick }: HeaderProps) {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="outline" className="rounded-full">
-                LWC layout builder
+              <Button asChild variant="outline" className="rounded-full">
+                <Link
+                  href="https://lwclayoutbuilder.codbbit.com/"
+                  target="_blank"
+                >
+                  LWC layout builder
+                </Link>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
