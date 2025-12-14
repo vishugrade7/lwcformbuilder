@@ -17,10 +17,10 @@ interface HeaderProps {
 
 export default function Header({ onPreviewClick, onCodeClick }: HeaderProps) {
   return (
-    <header className="flex items-center justify-between px-6 py-3 border-b bg-card z-10 shrink-0">
+    <header className="flex items-center justify-between px-4 py-2 border-b bg-card z-10 shrink-0">
       <div className="flex items-center gap-3">
-        <LayoutGrid className="h-7 w-7 text-primary" />
-        <h1 className="text-2xl font-bold text-primary font-headline tracking-tight">
+        <LayoutGrid className="h-6 w-6 text-primary" />
+        <h1 className="text-xl font-bold text-primary font-headline tracking-tight">
           LWC form builder
         </h1>
       </div>
@@ -34,8 +34,9 @@ export default function Header({ onPreviewClick, onCodeClick }: HeaderProps) {
                 size="icon"
                 onClick={onPreviewClick}
                 aria-label="Preview"
+                className="h-8 w-8"
               >
-                <Eye className="h-5 w-5" />
+                <Eye className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -48,8 +49,9 @@ export default function Header({ onPreviewClick, onCodeClick }: HeaderProps) {
                 size="icon"
                 onClick={onCodeClick}
                 aria-label="Generate Code"
+                className="h-8 w-8"
               >
-                <Code className="h-5 w-5" />
+                <Code className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
