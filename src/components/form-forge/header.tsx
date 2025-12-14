@@ -29,6 +29,16 @@ export default function Header({ onPreviewClick, onCodeClick }: HeaderProps) {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
+              <Button variant="outline" className="rounded-full">
+                LWC layout builder
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>LWC layout builder</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
               <Button
                 variant="outline"
                 size="icon"
